@@ -72,7 +72,45 @@
       return "fallback";
     }
     ``` 
-  - HystrixCommand中的``commandProperties``中的属性可以通过源码中的``com.netflix.hystrix.contrib.javanica.conf``包中的``HystrixPropertiesManager``这个类中查找对应的属性
+    - HystrixCommand中的``commandProperties``中的属性可以通过源码中的``com.netflix.hystrix.contrib.javanica.conf``包中的``HystrixPropertiesManager``这个类中查找对应的属性
+    - 如果不想要对每个方法都做一个特殊的定制化fallback方法,可以在Class类的头部添加```@DefaultProperties(defaultFallback = "定义的通用fallback方法" )```
+  - 客户端降级
+    - 基础的方式与上述服务端降级类似，也是在调用方法添加```@HystrixCommand```注解。但是启动类需要用``@EnableHystrix``替换``@EnableCircuitBreaker``注解
+    - 结合OpenFeign使用,定义通用的fallback处理类
+      - example
+      ```
+      /*
+      第一步定义一个OpenFeign的客户端,加上注解
+      @FeignClient:value代表注册中心上面注册的对应的服务的服务名
+      fallback为全局通用的fallback处理类
+      */
+      @Service
+      @FeignClient(value = "TEST-HYSTRIX-SERVICE",fallback = GlobalFallbackService.class)
+      public interface TestHystrixService {
+          @GetMapping("/hystrix/ok/{id}")
+          public String OK(@PathVariable("id") Integer id);
+          @GetMapping("/hystrix/bad/{id}")
+          public String bad(@PathVariable("id") Integer id);
+      }
+      /*
+      定义一个GlobalFallbackService.class
+      注意要加上@Component注解，保证该类能被扫描到
+      */
+      @Component
+      public class GlobalFallbackService implements TestHystrixService {
+          @Override
+          public String OK(Integer id) {
+              return "请求超时，请稍后重试";
+          }
+          @Override
+          public String bad(Integer id) {
+              return "请求超时，请稍后重试";
+          }
+      }
+      /*
+      Application启动类上添加@EnableHystrix
+      */
+      ```
   
 ## 服务熔断
 - 当服务访问达到最大限度的访问量后,``直接拒绝访问``,然后``调用服务降级``的方法``返回友好提示``(类似于保险丝负载过大后直接熔断拉闸)
@@ -89,12 +127,15 @@
   - code
     - 
     ``` 
+    /*
+    配置的含义 在规定的时间窗口期1000毫秒内，如果20次请求中有80%的异常情况，触发服务熔断
+    */
     @HystrixCommand(
             commandProperties = {
                     @HystrixProperty(name = "circuitBreaker.enabled",value = "true"),
-                    @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold",value = "10"),
-                    @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds",value = "10000"),
-                    @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage",value = "60"),
+                    @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold",value = "20"),
+                    @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds",value = "1000"),
+                    @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage",value = "80"),
 
             },
             fallbackMethod = "circuitBreakerFallback"
