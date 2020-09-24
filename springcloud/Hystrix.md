@@ -46,6 +46,34 @@
   - 服务超时
   - 服务熔断触发服务降级
   - 线程池、信号量打满导致服务降级 
+- example
+  - 服务端降级
+    - 以maven项目为例,引入依赖
+    ```
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+    </dependency>
+    ```
+    - 启动类上添加@EnableCircuitBreaker注解
+    - 在调用的方法上添加注解@HystrixComman
+    ```
+    @HystrixCommand(commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",
+                    value = "3000"),fallbackMethod = "fallback")
+    }
+    public String ok(@PathVariable("id") Integer id) throws InterruptedException {
+        log.info("ok:{}",result);
+        TimeUnit.SECONDS.sleep(5);
+        return result;
+    }
+    //触发服务降级时的友好提示方法
+    public String fallback(Integer id){
+      return "fallback";
+    }
+    ``` 
+  - HystrixCommand中的``commandProperties``中的属性可以通过源码中的``com.netflix.hystrix.contrib.javanica.conf``包中的``HystrixPropertiesManager``这个类中查找对应的属性
+  
 ## 服务熔断
 - 当服务访问达到最大限度的访问量后,``直接拒绝访问``,然后``调用服务降级``的方法``返回友好提示``(类似于保险丝负载过大后直接熔断拉闸)
 - 服务降级--->服务熔断--->恢复链路调用
