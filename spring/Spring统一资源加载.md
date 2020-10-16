@@ -2,7 +2,7 @@
 - Spring资源加载策略
   - 职能划分清楚：资源的定义和资源的加载应该要有一个清晰的界限
   - 统一的抽象：统一的资源定义和资源加载策略。资源加载后要返回统一的抽象给客户端，客户端要对资源进行怎样的处理，应该由抽象资源接口来界定。
-- 统一资源：***Resource*([Resource.java](https://github.com/smallblack-xh/spring-framework/blob/5.0.x/spring-core/src/main/java/org/springframework/core/io/Resource.java))**  
+- 统一资源：***Resource*([Resource.java](https://github.com/smallblack-xh/spring-framework/blob/5.0.x/spring-core/src/main/java/org/springframework/core/io/Resource.java))**<a name='Resource'></a>   
    org.springframework.core.io.*Resource 为 Spring 框架所有资源的抽象和访问接口，它继承 org.springframework.core.io.InputStreamSource接口。作为所有资源的统一抽象，Resource 定义了一些通用的方法，由子类 AbstractResource 提供统一的默认实现。
   - 子类结构
 
@@ -15,7 +15,7 @@
   - ***AbstractResource***([AbstractResource.java](https://github.com/smallblack-xh/spring-framework/blob/5.0.x/spring-core/src/main/java/org/springframework/core/io/AbstractResource.java))
     - org.springframework.core.io.AbstractResource ，为 Resource 接口的默认抽象实现,实现了 Resource 接口的大部分的公共实现。
     - 当需要实现自定义的Resource时，应该继承<u>*AbstractResource*</u>接口
-- 统一资源定位：***ResourceLoader*([ResourceLoader.java](https://github.com/smallblack-xh/spring-framework/blob/5.0.x/spring-core/src/main/java/org/springframework/core/io/ResourceLoader.java))**  
+- 统一资源定位：***ResourceLoader*([ResourceLoader.java](https://github.com/smallblack-xh/spring-framework/blob/5.0.x/spring-core/src/main/java/org/springframework/core/io/ResourceLoader.java))**<a name='ResourceLoader'></a>  
   - 子类结构  
     ![ResourceLoader 类图](imgs/2020-10-16-15-32-43.png)
   - Spring 将资源的定义和资源的加载区分开了，Resource 定义了统一的资源，而资源的加载由 ***ResourceLoader***统一定义

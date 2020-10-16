@@ -31,9 +31,9 @@
     接口方式注入显得比较霸道，因为它需要被依赖的对象实现不必要的接口，带有侵入性。一般都不推荐这种方式。想了解的话参考[interface注入](http://wiki.jikexueyuan.com/project/spring-ioc/iocordi-1.html#6e5dfcd838f3a79e9129641785cf736f)
 - [相关类图(可点击查看部分类继承)](https://www.processon.com/diagraming/5f89420ee401fd06fd8e06a9)
   - **Resource**  
-    对资源的抽象。它的每一个实现类都代表了一种资源的访问策略，如 ClassPathResource、RLResource、FileSystemResource(源码解析详见[spring-Resource]())![ResourceLoader 类图](imgs/2020-10-16-15-29-37.png)
+    对资源的抽象。它的每一个实现类都代表了一种资源的访问策略，如 ClassPathResource、RLResource、FileSystemResource(源码解析详见[spring-Resource](https://github.com/smallblack-xh/docs/blob/master/spring/Spring%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD.md#Resource))![ResourceLoader 类图](imgs/2020-10-16-15-29-37.png)
   - **ResourceLoader**   
-    Spring 利用 org.springframework.core.io.ResourceLoader 来进行统一资源加载(源码解析详见[spring-ResourceLoader]())![ResourceLoader 类图](imgs/2020-10-16-15-32-43.png)
+    Spring 利用 org.springframework.core.io.ResourceLoader 来进行统一资源加载(源码解析详见[spring-ResourceLoader](https://github.com/smallblack-xh/docs/blob/master/spring/Spring%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD.md#ResourceLoader))![ResourceLoader 类图](imgs/2020-10-16-15-32-43.png)
   - **BeanFactory** 
     <!--源码解析详见[spring-BeanFactory]()-->
     ![BeanFactory类图](imgs/2020-10-16-15-46-02.png) 
