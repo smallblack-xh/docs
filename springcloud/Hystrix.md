@@ -160,4 +160,31 @@
 ## 服务限流
 - 后续使用``sentinel``替换
 ## 工作流程
-- 
+
+## Hystrix监控搭建
+- 使用Hystrix的监控，需要且一定要引入``spring-boot-starter-actuator``依赖
+- Hystrix监控工程需要引入依赖``spring-cloud-starter-netflix-hystrix-dashboard``
+- 在监控的工程启动类上，需要打上注解@EnableHystrixDashboard
+- 需要监控的工程中，需要配置以下代码
+  ```
+  //由于springcloud版本升级的问题，遗留下该问题，需要使用Hystrix监控平台进行监控时,必须配置
+  @Bean
+    public ServletRegistrationBean getServlet(){
+        HystrixMetricsStreamServlet streamServlet = new HystrixMetricsStreamServlet();
+        ServletRegistrationBean registrationBean = new ServletRegistrationBean(streamServlet);
+        registrationBean.setLoadOnStartup(1);
+        registrationBean.addUrlMappings("/hystrix.stream");
+        registrationBean.setName("HystrixMetricsStreamServlet");
+        return registrationBean;
+    }
+  ```
+- 启动监控工程以后,进入http://localhost:port/hystrix即可见到以下页面
+  ![Hystrix监控界面](../imgs/hystrix/Hystrix监控界面.png)
+- 键入被监控的项目url ``http://localhost:port/hystrix.stream``，自由设置delay以及title，然后点击Monitor Stream即可进入下图
+  ![Hystrix监控例子](../imgs/hystrix/Hystrix监控例子.png)
+- 如果上述页面出现loading状态，在Hystrix监控项目的application.yml/properties中添加以下注解即可解决
+  ```
+  hystrix:
+    dashboard:
+      proxy-stream-allow-list: "*"
+  ```
